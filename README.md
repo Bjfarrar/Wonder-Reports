@@ -1,8 +1,17 @@
 # Wonder Reports
-Local development prototype for rehearsal and show reports. Python 3.12+, no third-party dependencies.
+JavaScript web app for rehearsal and show reports. Requires Node.js 24 or newer; Python is not required.
 
-Run `python3 server.py` and open port 8000 locally. Data persists in SQLite. Create a production, enter managers and company members, create a report, then review both distributions before sending. Both copies have identical content. Cast recipients are envelope-only BCC; other personnel appear in CC. Anyone classified as cast is excluded from the team envelope.
+## Run from GitHub Codespaces
+1. Open the repository on GitHub. Choose Code → Codespaces → Create codespace on main.
+2. In the terminal, run `npm ci`, then `npm start`.
+3. Open port 8000 from the Ports tab. Keep visibility Private.
 
-Email requires SMTP_HOST, SMTP_PORT (default 587), SMTP_FROM, and optionally SMTP_USER / SMTP_PASSWORD. STARTTLS certificate verification is enabled. Supply credentials through environment settings, never source control. Sending is explicit; no sample emails are sent. SMTP acceptance does not guarantee inbox delivery. Partial-send errors require checking mail logs before retrying.
+For a local checkout, use the same commands in the repository directory. Run checks with `npm test`.
 
-This is a local, single-workspace prototype. Add authentication, authorization, CSRF protection, durable delivery tracking/idempotency, backups and deployment configuration before exposing it publicly or using it for a live company. Concurrent edits currently use last-write-wins. No live email service is configured by default.
+Data persists in `reports.sqlite3`; existing Python-version databases remain compatible. Back this file up before moving hosts. REPORTS_DB can specify another persistent path. PORT defaults to 8000 and HOST to 127.0.0.1.
+
+Create a production, add managers and personnel, write a report, and review both email distributions. Both copies have identical content. Managers appear in To; cast recipients are envelope-only BCC. Other personnel appear in CC. Cast addresses are excluded from the team distribution, even if they also have another role.
+
+Email requires SMTP_HOST and SMTP_FROM, SMTP_PORT (default 587), and optionally SMTP_USER / SMTP_PASSWORD. STARTTLS verification is required. Supply credentials through environment settings, never source control. SMTP acceptance does not guarantee inbox delivery. After partial-send errors, check mail logs before retrying.
+
+GitHub stores the code; GitHub Pages cannot run this server. Codespaces is suitable for development. Regular company use requires a Node.js host with persistent storage, authentication, authorization, CSRF protection, delivery tracking/idempotency and backups. This prototype has no login and uses last-write-wins for concurrent edits. No live mail service is configured by default.
